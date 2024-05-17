@@ -1,16 +1,17 @@
-// LeaveMeAlone Game by Netologia. All Gights Reserved.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "../Components/LMAHealthComponent.h"
+#include "Weapon/LMAWeaponComponent.h"
 #include "LMADefaultCharacter.generated.h"
 
 class UCameraComponent;
 class USpringArmComponent;
 class ULMAHealthComponent;
 class UAnimMontage;
+class ALMABaseWeapon;
 
 UCLASS()
 class LEAVEMEALONE_API ALMADefaultCharacter : public ACharacter
@@ -68,6 +69,10 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Stamina")
 	float CurStamina;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	ULMAWeaponComponent* WeaponComponent;
+
 	
 public:	
 	// Called every frame
@@ -76,6 +81,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+
+	//void onFire();
     
 
 private:

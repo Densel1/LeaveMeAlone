@@ -8,12 +8,14 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
-
-
+#include "Weapon/LMAWeaponComponent.h"
+#include "Weapon/LMABaseWeapon.h"
 
 #include "../Components/LMAHealthComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/Engine.h"
+
+
 
 
 
@@ -47,6 +49,10 @@ ALMADefaultCharacter::ALMADefaultCharacter()
 
 	HealthComponent = CreateDefaultSubobject<ULMAHealthComponent>("HealthComponent");
 
+	WeaponComponent = CreateDefaultSubobject<ULMAWeaponComponent>("Weapon");
+
+
+
 }
 
 // Called when the game starts or when spawned
@@ -61,6 +67,7 @@ void ALMADefaultCharacter::BeginPlay()
 	OnHealthChanged(HealthComponent->GetHealth());
 	HealthComponent->OnDeath.AddUObject(this, &ALMADefaultCharacter::OnDeath);
 	HealthComponent->OnHealthChanged.AddUObject(this, &ALMADefaultCharacter::OnHealthChanged);
+
 }
 
 // Called every frame
@@ -105,8 +112,12 @@ void ALMADefaultCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 	PlayerInputComponent->BindAxis("CameraZoom", this, &ALMADefaultCharacter::CameraZoom);
 
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &ULMAWeaponComponent::Fire);
+	PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &ULMAWeaponComponent::StopFire);
 
+    PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent, &ULMAWeaponComponent::Reload);
 }
+
 
 void ALMADefaultCharacter::MoveForward(float Value)
 {
@@ -131,12 +142,8 @@ void ALMADefaultCharacter::StartSprint() {
 	if (CurStamina > 0.1)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
-
-
-//		CurStamina += DecStamina;
 	}
 	isSprint = true;
-
 }
 
 void ALMADefaultCharacter::EndSprint() {
