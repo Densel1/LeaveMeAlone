@@ -39,7 +39,7 @@ public:
 
 	void ChangeClip();
 
-	FOnReload OnReload;
+    FOnReload OnReload;
 
 protected:
 	// Called when the game starts or when spawned
@@ -73,6 +73,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool IsCurrentClipEmpty();
+
+	bool IsFullClip();
 
 private:
 	FAmmoWeapon CurrentAmmoWeapon;

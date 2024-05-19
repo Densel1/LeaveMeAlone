@@ -36,8 +36,9 @@ void ALMABaseWeapon::DecrementBullets() {
 
 	if (IsCurrentClipEmpty())
 	{
+		stopFire();
 		OnReload.Broadcast();
-		ChangeClip();
+//		ChangeClip();
 	}
 }
 
@@ -48,7 +49,12 @@ void ALMABaseWeapon::oneShot() {
 
 bool ALMABaseWeapon::IsCurrentClipEmpty()
 {
-	return CurrentAmmoWeapon.Bullets==0;
+	return CurrentAmmoWeapon.Bullets <= 0;
+}
+
+bool ALMABaseWeapon::IsFullClip()
+{
+	return CurrentAmmoWeapon.Bullets == 30;
 }
 
 
@@ -63,6 +69,8 @@ void ALMABaseWeapon::Tick(float DeltaTime)
 void ALMABaseWeapon::onFire() {
 
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &ALMABaseWeapon::oneShot, shootTimeRate, true);
+//	if (IsCurrentClipEmpty())
+//		ChangeClip();
 }
 
 void ALMABaseWeapon::stopFire() {

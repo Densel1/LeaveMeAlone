@@ -5,8 +5,6 @@
 #include "GameFramework/Character.h"
 #include "Weapon/LMAWeaponComponent.h"
 
-#include "Engine/World.h"
-#include "Weapon/LMABaseWeapon.h"
 
 
 
@@ -18,8 +16,7 @@ ULMAWeaponComponent::ULMAWeaponComponent()
 
 	PrimaryComponentTick.bCanEverTick = true;
 
-//	Weapon = GetWorld()->SpawnActor<ALMABaseWeapon>(WeaponClass);
-	Weapon->OnReload.AddUObject(this, &ULMAWeaponComponent::Reload);
+
 
 }
 
@@ -50,6 +47,8 @@ void ULMAWeaponComponent::oneShot() {
 void ULMAWeaponComponent::SpawnWeapon()
 {
 	Weapon = GetWorld()->SpawnActor<ALMABaseWeapon>(WeaponClass);
+	Weapon->OnReload.AddUObject(this, &ULMAWeaponComponent::broadcastReciever); 
+
 	if (Weapon)
 	{
 		const auto Character = Cast<ACharacter>(GetOwner());
@@ -62,22 +61,21 @@ void ULMAWeaponComponent::SpawnWeapon()
 }
 
 void ULMAWeaponComponent::InitAnimNotify() {
-//	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("InitAnimNotify")));
+
 
 	if (!ReloadMontage)
 		return;
-//	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("ReloadMontage")));
+
 	const /* FAnimNotifyEvent*/ auto NotifiesEvents = ReloadMontage->Notifies;
 	for (auto NotifyEvent : NotifiesEvents)
 	{
 		auto ReloadFinish = Cast<ULMAReloadFinishedAnimNotify>(NotifyEvent.Notify);
-//		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Notify")));
+
 
 		if (ReloadFinish)
 		{
-//			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("ReloadFinished")));
+
 			ReloadFinish->OnNotifyReloadFinished.AddUObject(this, &ULMAWeaponComponent::OnNotifyReloadFinished);
-//			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("ReloadFinished")));
 
 			break;
 		}
@@ -95,7 +93,15 @@ void ULMAWeaponComponent::OnNotifyReloadFinished(USkeletalMeshComponent* Skeleta
 
 bool ULMAWeaponComponent::CanReload() const
 {
-	return !AnimReloading;
+	bool ableToReload = 1;
+	if (AnimReloading || Weapon->IsFullClip())
+		ableToReload = false;
+
+	return ableToReload;
+}
+
+void ULMAWeaponComponent::broadcastReciever() {
+	Reload();
 }
 
 void ULMAWeaponComponent::Fire()
@@ -104,8 +110,9 @@ void ULMAWeaponComponent::Fire()
 
 	if (Weapon&&!AnimReloading)
 	{
+		if (!Weapon->IsCurrentClipEmpty())
 		Weapon->onFire();
-//		if (Weapon->IsCurrentClipEmpty())
+
 //		{
 //			isShooting = false;
 			
@@ -116,13 +123,14 @@ void ULMAWeaponComponent::Fire()
 }
 
 void ULMAWeaponComponent::Reload() {
+	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, FString::Printf(TEXT("TryReload")));
 	if (!CanReload())
 		return;
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Reload")));
+	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, FString::Printf(TEXT("Reload")));
 	AnimReloading = true;
 	ACharacter* Character = Cast<ACharacter>(GetOwner());
 	Character->PlayAnimMontage(ReloadMontage);
-//	Weapon->ChangeClip();
+	Weapon->ChangeClip();
 }
 
 void ULMAWeaponComponent::StopFire() {

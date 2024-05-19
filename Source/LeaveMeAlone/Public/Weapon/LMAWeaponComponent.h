@@ -11,7 +11,7 @@
 
 class ALMABaseWeapon;
 class UAnimMontage;
-//class UAnimNotify;
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class LEAVEMEALONE_API ULMAWeaponComponent : public UActorComponent
@@ -19,7 +19,7 @@ class LEAVEMEALONE_API ULMAWeaponComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
+
 	ULMAWeaponComponent();
 
 	void Fire();
@@ -29,14 +29,14 @@ public:
 
 
 protected:
-	// Called when the game starts
+
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	TSubclassOf<ALMABaseWeapon> WeaponClass;
 
 	UPROPERTY()
-	ALMABaseWeapon* Weapon;//= nullptr;
+	ALMABaseWeapon* Weapon = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	UAnimMontage* ReloadMontage;
@@ -46,7 +46,7 @@ protected:
 
 
 public:	
-	// Called every frame
+
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 		void oneShot();
@@ -67,7 +67,7 @@ private:
 	bool isShooting = false;
 
 
-
+	void broadcastReciever();
 
 
 };
