@@ -37,6 +37,7 @@ public:
 	// Sets default values for this actor's properties
 	ALMABaseWeapon();
 
+	UFUNCTION(BlueprintCallable)
 	void ChangeClip();
 
     FOnReload OnReload;
@@ -69,12 +70,15 @@ public:
 
 	void onFire();
 
+	UFUNCTION(BlueprintCallable)
 	void stopFire();
 
 	UFUNCTION(BlueprintCallable)
 	bool IsCurrentClipEmpty();
 
 	bool IsFullClip();
+
+	FAmmoWeapon GetCurrentAmmoWeapon() const { return CurrentAmmoWeapon; }
 
 private:
 	FAmmoWeapon CurrentAmmoWeapon;

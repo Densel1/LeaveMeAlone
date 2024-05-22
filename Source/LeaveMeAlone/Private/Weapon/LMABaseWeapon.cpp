@@ -32,13 +32,11 @@ void ALMABaseWeapon::BeginPlay()
 
 void ALMABaseWeapon::DecrementBullets() {
 	CurrentAmmoWeapon.Bullets--;
-	UE_LOG(LogWeapon, Display, TEXT("Bullets = %s"), *FString::FromInt(CurrentAmmoWeapon.Bullets));
 
 	if (IsCurrentClipEmpty())
 	{
 		stopFire();
 		OnReload.Broadcast();
-//		ChangeClip();
 	}
 }
 
@@ -69,8 +67,6 @@ void ALMABaseWeapon::Tick(float DeltaTime)
 void ALMABaseWeapon::onFire() {
 
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &ALMABaseWeapon::oneShot, shootTimeRate, true);
-//	if (IsCurrentClipEmpty())
-//		ChangeClip();
 }
 
 void ALMABaseWeapon::stopFire() {
@@ -79,7 +75,6 @@ void ALMABaseWeapon::stopFire() {
 
 
 void ALMABaseWeapon::Shoot() {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Fire %i"), CurrentAmmoWeapon.Bullets));
 	const FTransform SocketTransform = WeaponComponent->GetSocketTransform("Muzzle");
 	const FVector TraceStart = SocketTransform.GetLocation();
 	const FVector ShootDirection = SocketTransform.GetRotation().GetForwardVector();

@@ -51,6 +51,9 @@ public:
 
 		void oneShot();
 
+		UFUNCTION(BlueprintCallable)
+		bool GetCurrentWeaponAmmo(FAmmoWeapon& AmmoWeapon) const;
+
 private:
 
 
@@ -63,8 +66,6 @@ private:
 
 	void OnNotifyReloadFinished(USkeletalMeshComponent* SkeletalMesh);
 	bool CanReload() const;
-
-	bool isShooting = false;
 
 
 	void broadcastReciever();

@@ -12,12 +12,7 @@
 
 ULMAWeaponComponent::ULMAWeaponComponent()
 {
-
-
 	PrimaryComponentTick.bCanEverTick = true;
-
-
-
 }
 
 
@@ -42,6 +37,16 @@ void ULMAWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 void ULMAWeaponComponent::oneShot() {
 	Weapon->onFire();
+}
+
+bool ULMAWeaponComponent::GetCurrentWeaponAmmo(FAmmoWeapon& AmmoWeapon) const
+{
+	if (Weapon)
+	{
+		AmmoWeapon = Weapon->GetCurrentAmmoWeapon();
+		return true;
+	}
+	return false;
 }
 
 void ULMAWeaponComponent::SpawnWeapon()
@@ -74,7 +79,6 @@ void ULMAWeaponComponent::InitAnimNotify() {
 
 		if (ReloadFinish)
 		{
-
 			ReloadFinish->OnNotifyReloadFinished.AddUObject(this, &ULMAWeaponComponent::OnNotifyReloadFinished);
 
 			break;
@@ -83,11 +87,12 @@ void ULMAWeaponComponent::InitAnimNotify() {
 }
 
 void ULMAWeaponComponent::OnNotifyReloadFinished(USkeletalMeshComponent* SkeletalMesh) {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("OnNotifyReloadFinished")));
+
 	const auto Character = Cast<ACharacter>(GetOwner());
 	if (Character->GetMesh() == SkeletalMesh)
 	{
 		AnimReloading = false;
+		Weapon->ChangeClip();
 	}
 }
 
@@ -106,35 +111,24 @@ void ULMAWeaponComponent::broadcastReciever() {
 
 void ULMAWeaponComponent::Fire()
 {
-//	isShooting = true;
-
 	if (Weapon&&!AnimReloading)
 	{
 		if (!Weapon->IsCurrentClipEmpty())
 		Weapon->onFire();
-
-//		{
-//			isShooting = false;
-			
-//			Reload();
-//		}
-
 	}
 }
 
 void ULMAWeaponComponent::Reload() {
-	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, FString::Printf(TEXT("TryReload")));
+
 	if (!CanReload())
 		return;
-	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Red, FString::Printf(TEXT("Reload")));
 	AnimReloading = true;
 	ACharacter* Character = Cast<ACharacter>(GetOwner());
 	Character->PlayAnimMontage(ReloadMontage);
-	Weapon->ChangeClip();
+
 }
 
 void ULMAWeaponComponent::StopFire() {
 
-//	isShooting = false;
 	Weapon->stopFire();
 }

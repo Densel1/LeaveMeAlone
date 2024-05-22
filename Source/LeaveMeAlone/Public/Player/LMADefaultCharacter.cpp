@@ -81,7 +81,7 @@ void ALMADefaultCharacter::Tick(float DeltaTime)
 
 	if (isSprint)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Stamina = %f"), CurStamina));
+//		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Stamina = %f"), CurStamina));
 		if (CurStamina > 0.0)
 
 			CurStamina += DecStamina;
@@ -149,8 +149,6 @@ void ALMADefaultCharacter::StartSprint() {
 void ALMADefaultCharacter::EndSprint() {
 	GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
 	isSprint = false;
-//	if (CurStamina < MaxStamina)
-//		CurStamina += IncStamina;
 }
 
 
@@ -189,5 +187,5 @@ void ALMADefaultCharacter::RotationPlayerOnCursor()
 
 void ALMADefaultCharacter::OnHealthChanged(float NewHealth)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Health = %f"), NewHealth));
+//	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Health = %f"), NewHealth));
 }
